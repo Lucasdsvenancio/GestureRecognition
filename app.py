@@ -88,8 +88,8 @@ def draw_hand_info(image, brect, handedness, hand_sign_text):
     info_text = handedness.classification[0].label[0:]
     if hand_sign_text != "":
         info_text = f'{info_text}: {hand_sign_text}'
-    cv.putText(image, info_text, (brect[0] + 5, brect[1] - 4),
-               cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv.LINE_AA)
+    cv.putText(image, info_text, (brect[0] + 5, brect[1] - 15),
+               cv.FONT_HERSHEY_SIMPLEX, 0.7, (114,109,85), 1, cv.LINE_AA)
 
     return image
 
@@ -119,8 +119,8 @@ if __name__ == '__main__':
     hands = mp_hands.Hands(
         model_complexity=0,
         max_num_hands=2,
-        min_detection_confidence=0.8,
-        min_tracking_confidence=0.75
+        min_detection_confidence=0.85,
+        min_tracking_confidence=0.6
     )
 
     keypoint_classifier = KeyPointClassifier()
@@ -166,8 +166,8 @@ if __name__ == '__main__':
                     debug_image,
                     hand_landmarks,
                     mp_hands.HAND_CONNECTIONS,
-                    mp_drawing.DrawingSpec(color=(80,22,10), thickness=1, circle_radius=5),
-                    mp_drawing.DrawingSpec(color=(80,44,121), thickness=1, circle_radius=2))
+                    mp_drawing.DrawingSpec(color=(110,22,10), thickness=2, circle_radius=7),
+                    mp_drawing.DrawingSpec(color=(50,110,121), thickness=2, circle_radius=3))
                 
                 debug_image = draw_hand_info(debug_image,
                     brect,
