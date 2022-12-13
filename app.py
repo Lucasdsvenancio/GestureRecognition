@@ -65,7 +65,11 @@ def select_mode(key, mode):
         mode = 0
     if key == 50:
         mode = 1
-    if key == 51: # To train default hand
+    if key == 51:
+        mode = 2
+    if key == 52:
+        mode = 3
+    if key == 53: # To train default hand
         number = 0
     if 97 <= key <= 122:
         number = key - 96
@@ -73,7 +77,7 @@ def select_mode(key, mode):
     return number, mode
 
 def draw_debug_info(image, mode, index):
-    if mode != 0:
+    if mode == 1:
         cv.putText(image, 'Program mode: Logging Key Points', (10, 90),
             cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1,
             cv.LINE_AA)
@@ -81,7 +85,7 @@ def draw_debug_info(image, mode, index):
             cv.putText(image, f'Num: {str(index)}', (10, 110),
                 cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1,
                 cv.LINE_AA)
-    
+            
     return image
 
 def draw_hand_info(image, brect, handedness, hand_sign_text):
@@ -91,6 +95,26 @@ def draw_hand_info(image, brect, handedness, hand_sign_text):
     cv.putText(image, info_text, (brect[0] + 5, brect[1] - 15),
                cv.FONT_HERSHEY_SIMPLEX, 0.7, (114,109,85), 1, cv.LINE_AA)
 
+    return image
+
+def draw_pointer_positions(image, mode, landmarks, normalized_landmarks):
+    if mode == 2:
+        cv.putText(image, 'Program mode: Showing Point Positions', (10, 90),
+                cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1,
+                cv.LINE_AA)
+        for i in range(0, 6):
+            cv.putText(image, str(tuple(landmarks[i*4])), (landmarks[i*4][0] + 20, landmarks[i*4][1]),
+                cv.FONT_HERSHEY_SIMPLEX, 0.5, (114,109,85), 1, cv.LINE_AA)
+    elif mode == 3:
+        normalized_landmarks = np.reshape(normalized_landmarks, (-1, 2)).tolist()
+        cv.putText(image, 'Program mode: Showing Point Positions Normalized', (10, 90),
+                cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1,
+                cv.LINE_AA)
+        for i in range(0, 6):
+            cv.putText(image, f"{[round(x, 2) for x in normalized_landmarks[i*4]]}", (landmarks[i*4][0] + 20, landmarks[i*4][1]),
+                cv.FONT_HERSHEY_SIMPLEX, 0.5, (114,109,85), 1, cv.LINE_AA)
+
+        
     return image
 
 def calc_bounding_rect(image, landmarks):
@@ -109,6 +133,8 @@ def calc_bounding_rect(image, landmarks):
     x, y, w, h = cv.boundingRect(landmark_array)
 
     return [x, y, x + w, y + h]
+
+
 
 if __name__ == '__main__':
     cap = cv.VideoCapture(0)
@@ -173,6 +199,12 @@ if __name__ == '__main__':
                     brect,
                     handedness,
                     keypoint_classifier_labels[hand_sign_id])
+                
+                debug_image = draw_pointer_positions(debug_image,
+                    mode,
+                    landmark_list,
+                    pre_processed_landmark_list,
+                )
 
         debug_image = draw_debug_info(debug_image, mode, index)
 
