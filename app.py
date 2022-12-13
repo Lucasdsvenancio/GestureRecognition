@@ -166,7 +166,7 @@ if __name__ == '__main__':
                     debug_image,
                     hand_landmarks,
                     mp_hands.HAND_CONNECTIONS,
-                    mp_drawing.DrawingSpec(color=(110,22,10), thickness=2, circle_radius=7),
+                    mp_drawing.DrawingSpec(color=(110,22,10), thickness=3, circle_radius=7),
                     mp_drawing.DrawingSpec(color=(50,110,121), thickness=2, circle_radius=3))
                 
                 debug_image = draw_hand_info(debug_image,
